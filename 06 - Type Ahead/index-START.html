@@ -17,6 +17,48 @@
 <script>
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
+const cities = [];
+// fetch(endpoint).then(blob => console.log(blob => console.log(blob)))
+// fetch(endpoint).then(blob => console.log(blob => JSON.parse(blob)))  // But if we know the fetch "promise" will yield a JSON object, why not this?
+
+fetch(endpoint)
+  .then(blob => blob.json())  // Need to convert blob though. 'blob' has a JSON method 
+  .then(data => cities.push(...data))    // Need to also use "spread method" : "..."  so cities is an array of values, instead of an array inside an array                                              
+
+function findMatches(wordToMatch, cities){
+  return  cities.filter(place => {
+    // Here determine whether a city/state matches what was searched 
+    
+    const regex = new RegExp(wordToMatch, 'gi');
+    return place.city.match(regex) || place.state.match(regex);
+  }); 
+}
+
+function displayMatches(){
+  // console.log(this.value)
+  const matchArray = findMatches(this.value, cities );
+  const html = matchArray.map(place => {
+    const regex = new RegExp(this.value, 'gi');
+    const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`);
+    const stateName = place.city.replace(regex, `<span class="hl">${this.value}</span>`);
+    return `
+      <li>
+        //<span class="name">${place.city}, ${place.state}</span>
+        <span class="name">${cityName}, ${stateName }</span>
+        <span class="population">${place.population}</span>
+      </li>
+    `;
+  }).join('');    //.map returns array, concatenate here to return a string
+  suggestions.innerHTML = html;
+}
+
+const searchInput = document.querySelector('.search');
+const suggestions = document.querySelector('.suggestions');
+
+searchInput.addEventListener('change', displayMatches);
+searchInput.addEventListener('keyup', displayMatches);
+// suggestions.addEventListener('change', findMatches);
+
 </script>
 </body>
 </html>
