@@ -3,5 +3,9 @@
 		{
 			"path": "."
 		}
-	]
+	],
+	"settings": {
+		"python.pythonPath": "/opt/anaconda3/envs/dev-gmprocess/bin/python",
+		"git.ignoreLimitWarning": true
+	}
 }
